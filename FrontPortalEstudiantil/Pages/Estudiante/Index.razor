@@ -1,5 +1,74 @@
-﻿<h3>Index</h3>
+﻿@page "/estudiante/index"
+@inject HttpClient httpClient
+@inject NavigationManager NavigationManager
+
+<MudText Typo="Typo.h2" Class="ml">Estudiantes</MudText>
+
+<MudTable Items="@estudiantes" Hover="true" Bordered="true" Striped="true">
+    <ToolBarContent>
+        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="goAdd" />
+        <MudSpacer />
+        <MudTextField @bind-Value="searchText" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Nombre</MudTh>
+        <MudTh>Apellido</MudTh>
+        <MudTh>Codigo Estudiante</MudTh>
+        <MudTh>Grado</MudTh>
+        <MudTh>Turno</MudTh>
+        <MudTh>Encargado</MudTh>
+        <MudTh>EncargadoDUI</MudTh>
+        <MudTh>Correo</MudTh>
+        <MudTh>Direccion</MudTh>
+        <MudTh>Telefono</MudTh>
+        <MudTh>Acciones</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
+        <MudTd DataLabel="Apellido">@context.Apellido</MudTd>
+        <MudTd DataLabel="CodigoEstudiante">@context.CodigoEstudiante</MudTd>
+        <MudTd DataLabel="GradoId">@context.GradoId</MudTd>
+        <MudTd DataLabel="TurnoId">@context.TurnoId</MudTd>
+        <MudTd DataLabel="Encargado">@context.Encargado</MudTd>
+        <MudTd DataLabel="EncargadoDUI">@context.EncargadoDUI</MudTd>
+        <MudTd DataLabel="Correo">@context.Correo</MudTd>
+        <MudTd DataLabel="Direccion">@context.Direccion</MudTd>
+        <MudTd DataLabel="Telefono">@context.Telefono</MudTd>
+
+
+        <MudTd>
+            <MudButton Link="@($"/estudiante/editar/{context.Id}")" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Tertiary"
+                       Class="text-center">Editar</MudButton>
+            <MudButton Link="@($"/estudiante/eliminar/{context.Id}")" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Warning"
+                       Class="text-center">Eliminar</MudButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 
 @code {
+    private IEnumerable<Estudiante> estudiantes = new List<Estudiante>();
+    private string searchText = "";
+    private Estudiante estudiante = new Estudiante();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await getAll();
+    }
+
+    private async Task getAll()
+    {
+        var httpResponse = await httpClient.PostAsJsonAsync("estudiante/buscar", estudiante);
+        string respString = await httpResponse.Content.ReadAsStringAsync();
+        estudiantes = JsonSerializer.Deserialize<IEnumerable<Estudiante>>(respString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+
+    private void goAdd()
+    {
+        NavigationManager.NavigateTo("estudiante/agregar");
+    }
 }
