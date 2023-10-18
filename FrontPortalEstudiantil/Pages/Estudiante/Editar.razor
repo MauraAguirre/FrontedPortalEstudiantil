@@ -1,5 +1,108 @@
-﻿<h3>Editar</h3>
+﻿@page "/estudiante/editar/{id:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService _localStorageService
+
+<MudText Typo="Typo.h2" Class="ml">Editar Estudiante</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <EditForm Model="estudiante" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="Nombre" @bind-Value="estudiante.Nombre" For="@(() => estudiante.Nombre)" />
+                        <MudTextField Label="Apellido" @bind-Value="estudiante.Apellido" For="@(() => estudiante.Apellido)" />
+                        <MudTextField Label="CodigoEstudiante" @bind-Value="estudiante.CodigoEstudiante" For="@(() => estudiante.CodigoEstudiante)" />
+                        <MudTextField Label="Encargado" @bind-Value="estudiante.Encargado" For="@(() => estudiante.Encargado)" />
+                        <MudTextField Label="EncargadoDUI" @bind-Value="estudiante.EncargadoDUI" For="@(() => estudiante.EncargadoDUI)" />
+                        <MudTextField Label="Correo" @bind-Value="estudiante.Correo" For="@(() => estudiante.Correo)" />
+                        <MudTextField Label="Direccion" @bind-Value="estudiante.Direccion" For="@(() => estudiante.Direccion)" />
+                        <MudTextField Label="Telefono" @bind-Value="estudiante.Telefono" For="@(() => estudiante.Telefono)" />
+
+                        <MudSelect Variant="Variant.Outlined" Label="Turno" AnchorOrigin="Origin.BottomCenter"
+                        @bind-Value="estudiante.TurnoId" For="@(() => estudiante.TurnoId)">
+                            @foreach (var item in turnos)
+                            {
+                                <MudSelectItem Value="@item.Id">@item.Nombre</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudSelect Variant="Variant.Outlined" Label="Grado" AnchorOrigin="Origin.BottomCenter"
+                        @bind-Value="estudiante.GradoId" For="@(() => estudiante.GradoId)">
+                            @foreach (var item in grados)
+                            {
+                                <MudSelectItem Value="@item.Id">@item.Nombre</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Guardar cambios</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </EditForm>
+            @if (showLeaveAlert)
+            {
+                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center" ShowCloseIcon="true" CloseIconClicked="(() => CloseMe(true))">Ocurrió un problema.</MudAlert>
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
 @code {
+    [Parameter]
+    public int id { get; set; }
 
+    private IEnumerable<Turno> turnos = new List<Turno>();
+    private IEnumerable<Grado> grados = new List<Grado>();
+
+    private bool showLeaveAlert = false;
+    Estudiante estudiante = new Estudiante();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Http.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsync<string>("token"));
+        await getGrados(); await getTurnos();
+
+        var resp = await Http.GetStringAsync("estudiante/" + id);
+        estudiante = JsonSerializer.Deserialize<Estudiante>(resp, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        await saveChanges();
+    }
+
+    private async Task saveChanges()
+    {
+        var httpResponse = await Http.PutAsJsonAsync<Estudiante>("estudiante/" + estudiante.Id, estudiante);
+
+        if (!(httpResponse.StatusCode == System.Net.HttpStatusCode.OK))
+        {
+            showLeaveAlert = true;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("estudiante/index");
+        }
+    }
+
+    private void CloseMe(bool value)
+    {
+        showLeaveAlert = false;
+    }
+
+
+    private async Task getGrados()
+    {
+        var httpResponse = await Http.GetStringAsync("grado");
+        grados = JsonSerializer.Deserialize<IEnumerable<Grado>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+    private async Task getTurnos()
+    {
+        var httpResponse = await Http.GetStringAsync("turno");
+        turnos = JsonSerializer.Deserialize<IEnumerable<Turno>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
 }

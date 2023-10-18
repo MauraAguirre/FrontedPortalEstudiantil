@@ -52,6 +52,8 @@ namespace FrontPortalEstudiantil.Models
         [Required(ErrorMessage = "El número de teléfono es obligatorio")]
         [Display(Name = "Telefono")]
         public Int32 Telefono { get; set; }
+        [Required(ErrorMessage = "Estatus es obligatorio")]
+        public int Estatus { get; set; }
 
         //[ValidateNever]
         //public Rol Rol { get; set; }

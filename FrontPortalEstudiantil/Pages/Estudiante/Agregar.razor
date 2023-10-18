@@ -23,11 +23,11 @@
 
                         <MudSelect Variant="Variant.Outlined" Label="Turno" AnchorOrigin="Origin.BottomCenter"
                         @bind-Value="estudiante.TurnoId" For="@(() => estudiante.TurnoId)">
-                            @foreach (var item in grado)
+                            @foreach (var item in turno)
                             {
                                 <MudSelectItem Value="@item.Id">@item.Nombre</MudSelectItem>
                             }
-                        </MudSelect>
+                        </MudSelect> 
 
                         <MudSelect Variant="Variant.Outlined" Label="Grado" AnchorOrigin="Origin.BottomCenter"
                         @bind-Value="estudiante.GradoId" For="@(() => estudiante.GradoId)">

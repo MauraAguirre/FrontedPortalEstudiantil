@@ -1,5 +1,76 @@
-﻿<h3>Index</h3>
+﻿@page "/docente/index"
+@inject HttpClient httpClient
+@inject NavigationManager NavigationManager
+
+<MudText Typo="Typo.h2" Class="ml">Docentes</MudText>
+
+<MudTable Items="@docentes" Hover="true" Bordered="true" Striped="true">
+    <ToolBarContent>
+        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="goAdd" />
+        <MudSpacer />
+        <MudTextField @bind-Value="searchText" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Nombre</MudTh>
+        <MudTh>Apellido</MudTh>
+        <MudTh>Codigo Docente</MudTh>
+        <MudTh>Rol</MudTh>
+        <MudTh>Materia</MudTh>
+        <MudTh>Ciclo</MudTh>
+        <MudTh>Turno</MudTh>
+        <MudTh>DUI</MudTh>
+        <MudTh>Correo</MudTh>
+        <MudTh>Direccion</MudTh>
+        <MudTh>Telefono</MudTh>
+        <MudTh>Acciones</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
+        <MudTd DataLabel="Apellido">@context.Apellido</MudTd>
+        <MudTd DataLabel="CodigoDocente">@context.CodigoDocente</MudTd>
+        <MudTd DataLabel="RolId">@context.RolId</MudTd>
+        <MudTd DataLabel="MateriaId">@context.MateriaId</MudTd>
+        <MudTd DataLabel="CicloId">@context.CicloId</MudTd>
+        <MudTd DataLabel="TurnoId">@context.TurnoId</MudTd>
+        <MudTd DataLabel="DUI">@context.DUI</MudTd>
+        <MudTd DataLabel="Correo">@context.Correo</MudTd>
+        <MudTd DataLabel="Direccion">@context.Dirección</MudTd>
+        <MudTd DataLabel="Telefono">@context.Telefono</MudTd>
+
+
+        <MudTd>
+            <MudButton Link="@($"/docente/editar/{context.Id}")" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Tertiary"
+                       Class="text-center">Editar</MudButton>
+            <MudButton Link="@($"/docente/eliminar/{context.Id}")" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Warning"
+                       Class="text-center">Eliminar</MudButton>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 
 @code {
+    private IEnumerable<Docente> docentes = new List<Docente>();
+    private string searchText = "";
+    private Docente docente = new Docente();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await getAll();
+    }
+
+    private async Task getAll()
+    {
+        var httpResponse = await httpClient.PostAsJsonAsync("docente/buscar", docente);
+        string respString = await httpResponse.Content.ReadAsStringAsync();
+        docentes = JsonSerializer.Deserialize<IEnumerable<Docente>>(respString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+
+    private void goAdd()
+    {
+        NavigationManager.NavigateTo("docente/agregar");
+    }
 }
