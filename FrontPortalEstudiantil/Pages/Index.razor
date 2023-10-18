@@ -5,22 +5,25 @@
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService _localStorageService
 @inject HttpClient Http
-
-<MudImage ObjectFit="ObjectFit.Contain" Src="/images/fullcolor.png" Width="200" Height="150" Alt="Swedish Farm House" Elevation="0" Class="rounded-lg ma-4" />
-<MudPaper Class="pa-2 ma-4" Elevation="0">
+<MudImage ObjectFit="ObjectFit.Contain" Src="/images/sc.png" Width="200" Height="150" Alt="Swedish Farm House" Elevation="0" Class="rounded-lg ma-4" />
+<MudPaper Class="pa-4 ma-4" Elevation="1" Style="background-color: white; border: 2px solid black;">
     <EditForm Model="@user" OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator />
         <MudGrid>
             <MudItem xs="12">
                 <MudTextField Label="Codigo Docente" Class="mt-3"
-                @bind-Value="user.CodigoDocente" For="@(() => user.CodigoDocente)" />
+                @bind-Value="user.CodigoDocente" For="@(() => user.CodigoDocente)" Variant="Variant.Outlined" />
             </MudItem>
             <MudItem xs="12">
                 <MudTextField Label="Clave" Class="mt-3"
-                @bind-Value="user.Clave" For="@(() => user.Clave)" InputType="InputType.Password" />
+                @bind-Value="user.Clave" For="@(() => user.Clave)" InputType="@passwordInputType" Variant="Variant.Outlined">
+                    <MudInputAdornment Adornment="Adornment.End">
+                        <MudIconButton Icon="@Icons.Filled.Visibility" OnClick="@TogglePasswordVisibility"></MudIconButton>
+                    </MudInputAdornment>
+                </MudTextField>
             </MudItem>
             <MudItem xs="12">
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Login</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3">Login</MudButton>
             </MudItem>
         </MudGrid>
     </EditForm>
@@ -30,7 +33,9 @@
     }
 </MudPaper>
 
+
 @code {
+
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -52,7 +57,12 @@
             }
         }
     }
+    private InputType passwordInputType = InputType.Password;
 
+    private void TogglePasswordVisibility()
+    {
+        passwordInputType = passwordInputType == InputType.Password ? InputType.Text : InputType.Password;
+    }
     protected async Task OnValidSubmit()
     {
         var httpResponse = await Http.PostAsJsonAsync<UserLogin>("docente/login", user);
