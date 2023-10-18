@@ -20,6 +20,8 @@
                         <MudTextField Label="Correo" @bind-Value="docente.Correo" For="@(() => docente.Correo)" />
                         <MudTextField Label="Direccion" @bind-Value="docente.Dirección" For="@(() => docente.Dirección)" />
                         <MudTextField Label="Telefono" @bind-Value="docente.Telefono" For="@(() => docente.Telefono)" />
+                        <MudTextField Label="ConfirmPassword" @bind-Value="docente.ConfirmPassword_aux" For="@(() => docente.ConfirmPassword_aux)" InputType="InputType.Password" />
+
 
                         <MudSelect Variant="Variant.Outlined" Label="Rol" AnchorOrigin="Origin.BottomCenter"
                         @bind-Value="docente.RolId" For="@(() => docente.RolId)">
