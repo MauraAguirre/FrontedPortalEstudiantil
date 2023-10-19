@@ -4,32 +4,29 @@
 @inject ILocalStorageService _localStorageService
 
 <MudText Typo="Typo.h2" Class="ml">Grados</MudText>
-
-<MudTable Items="@grados" Dense="true" Hover="true" Bordered="true" Striped="true">
-    <ToolBarContent>
-        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="goAdd" />
+<ToolBarContent>
+ <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="goAdd" />
         <MudSpacer />
-        <MudTextField @bind-Value="searchText" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>Id</MudTh>
-        <MudTh>Nombre</MudTh>
-        <MudTh>Acciones</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Id">@context.Id</MudTd>
-        <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
-        <MudTd>
-            <MudButton Link="@($"/grado/editar/{context.Id}")" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Tertiary"
-                       Class="text-center">Editar</MudButton>
-            <MudButton Link="@($"/grado/eliminar/{context.Id}")" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Warning"
-                       Class="text-center">Eliminar</MudButton>
-        </MudTd>
-    </RowTemplate>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-</MudTable>
+</ToolBarContent>
+<MudGrid>
+    @foreach (var grado in grados)
+    {
+        <MudItem xs="12" sm="10" md="6" lg="4">
+            <MudCard Style="height: 150px; width: 200px; position: relative;">
+                <MudCardHeader Class="blue lighten-1 d-flex align-items-center justify-center" Style="height: 53px;">
+                    <MudText Typo="Typo.h6" Style="color: white;">Grado:</MudText>
+                </MudCardHeader>
+                <MudCardContent Class="d-flex align-items-center justify-center" Style="height: calc(100% - 53px - 56px);">
+                    <MudText Typo="Typo.h6">@grado.Nombre</MudText>
+                </MudCardContent>
+                <MudCardActions Class="justify-center" Style="position: absolute; bottom: 0; width: 100%;">
+                    <MudButton Link="@($"/grado/editar/{grado.Id}")" Variant="Variant.Outlined" Color="Color.Tertiary">Editar</MudButton>
+                    <MudButton Link="@($"/grado/eliminar/{grado.Id}")" Variant="Variant.Outlined" Color="Color.Warning">Eliminar</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
 
 @code {
     private IEnumerable<Grado> grados = new List<Grado>();

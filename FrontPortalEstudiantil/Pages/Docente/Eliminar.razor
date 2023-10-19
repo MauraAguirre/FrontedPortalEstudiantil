@@ -19,8 +19,7 @@
                         <MudTextField Label="DUI" @bind-Value="docente.DUI" For="@(() => docente.DUI)" />
                         <MudTextField Label="Correo" @bind-Value="docente.Correo" For="@(() => docente.Correo)" />
                         <MudTextField Label="Direccion" @bind-Value="docente.Dirección" For="@(() => docente.Dirección)" />
-                        <MudTextField Label="Telefono" @bind-Value="docente.Telefono" For="@(() => docente.Telefono)" />
-                        <MudTextField Label="ConfirmPassword" @bind-Value="docente.ConfirmPassword_aux" For="@(() => docente.ConfirmPassword_aux)" InputType="InputType.Password" />
+                        <MudTextField Label="Telefono" @bind-Value="docente.Telefono" For="@(() => docente.Telefono)" />)" 
 
 
                         <MudSelect Variant="Variant.Outlined" Label="Rol" AnchorOrigin="Origin.BottomCenter"
@@ -75,7 +74,7 @@
     private IEnumerable<Turno> turno = new List<Turno>();
 
     private bool showLeaveAlert = false;
-    Docente docente = new Docente();
+    EditDocente docente = new EditDocente();
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,7 +83,7 @@
         await getRoles(); await getMaterias(); await getCiclos(); await getTurnos();
 
         var resp = await Http.GetStringAsync("docente/" + id);
-        docente = JsonSerializer.Deserialize<Docente>(resp, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        docente = JsonSerializer.Deserialize<EditDocente>(resp, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
     private async Task OnValidSubmit(EditContext context)

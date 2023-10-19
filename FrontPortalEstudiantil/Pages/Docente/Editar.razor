@@ -15,14 +15,11 @@
                         <MudTextField Label="Nombre" @bind-Value="docente.Nombre" For="@(() => docente.Nombre)" />
                         <MudTextField Label="Apellido" @bind-Value="docente.Apellido" For="@(() => docente.Apellido)" />
                         <MudTextField Label="CodigoDocente" @bind-Value="docente.CodigoDocente" For="@(() => docente.CodigoDocente)" />
-                         <MudTextField Label="Clave" @bind-Value="docente.Clave" For="@(() => docente.Clave)" />
                         <MudTextField Label="DUI" @bind-Value="docente.DUI" For="@(() => docente.DUI)" />
                         <MudTextField Label="Correo" @bind-Value="docente.Correo" For="@(() => docente.Correo)" />
                         <MudTextField Label="Direccion" @bind-Value="docente.Dirección" For="@(() => docente.Dirección)" />
                         <MudTextField Label="Telefono" @bind-Value="docente.Telefono" For="@(() => docente.Telefono)" />
-                        <MudTextField Label="ConfirmPassword" @bind-Value="docente.ConfirmPassword_aux" For="@(() => docente.ConfirmPassword_aux)" InputType="InputType.Password" />
-
-
+                       
                         <MudSelect Variant="Variant.Outlined" Label="Rol" AnchorOrigin="Origin.BottomCenter"
                         @bind-Value="docente.RolId" For="@(() => docente.RolId)">
                             @foreach (var item in rol)
@@ -75,7 +72,7 @@
     private IEnumerable<Turno> turno = new List<Turno>();
 
     private bool showLeaveAlert = false;
-    Docente docente = new Docente();
+    EditDocente docente = new EditDocente();
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,7 +81,7 @@
         await getRoles(); await getMaterias(); await getCiclos(); await getTurnos();
 
         var resp = await Http.GetStringAsync("docente/" + id);
-        docente = JsonSerializer.Deserialize<Docente>(resp, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        docente = JsonSerializer.Deserialize<EditDocente>(resp, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 
     private async Task OnValidSubmit(EditContext context)
@@ -94,7 +91,7 @@
 
     private async Task saveChanges()
     {
-        var httpResponse = await Http.PutAsJsonAsync<Docente>("docente/" + docente.Id, docente);
+        var httpResponse = await Http.PutAsJsonAsync<EditDocente>("docente/" + docente.Id, docente);
 
         if (!(httpResponse.StatusCode == System.Net.HttpStatusCode.OK))
         {

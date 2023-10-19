@@ -4,47 +4,40 @@
 
 <MudText Typo="Typo.h2" Class="ml">Estudiantes</MudText>
 
-<MudTable Items="@estudiantes" Hover="true" Bordered="true" Striped="true">
+<MudTable Items="@estudiantes" Hover="true" Breakpoint="Breakpoint.Sm">
     <ToolBarContent>
         <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="goAdd" />
         <MudSpacer />
         <MudTextField @bind-Value="searchText" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh>Id</MudTh>
-        <MudTh>Nombre</MudTh>
-        <MudTh>Apellido</MudTh>
-        <MudTh>Codigo Estudiante</MudTh>
-        <MudTh>Grado</MudTh>
-        <MudTh>Turno</MudTh>
-        <MudTh>Encargado</MudTh>
-        <MudTh>EncargadoDUI</MudTh>
-        <MudTh>Correo</MudTh>
-        <MudTh>Direccion</MudTh>
-        <MudTh>Telefono</MudTh>
-        <MudTh>Acciones</MudTh>
+        <MudTh>Nombre:</MudTh>
+        <MudTh>Apellido:</MudTh>
+        <MudTh>Codigo:</MudTh>
+        <MudTh>Grado:</MudTh>
+        <MudTh>Turno:</MudTh>
+        <MudTh>Encargado:</MudTh>
+        <MudTh>Dui Encargado:</MudTh>
+        <MudTh>Correo:</MudTh>
+        <MudTh>Direccion:</MudTh>
+        <MudTh>Telefono:</MudTh>
+        <MudTh></MudTh>
     </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Id">@context.Id</MudTd>
-        <MudTd DataLabel="Nombre">@context.Nombre</MudTd>
-        <MudTd DataLabel="Apellido">@context.Apellido</MudTd>
-        <MudTd DataLabel="CodigoEstudiante">@context.CodigoEstudiante</MudTd>
-        <MudTd DataLabel="GradoId">@context.GradoId</MudTd>
-        <MudTd DataLabel="TurnoId">@context.TurnoId</MudTd>
-        <MudTd DataLabel="Encargado">@context.Encargado</MudTd>
-        <MudTd DataLabel="EncargadoDUI">@context.EncargadoDUI</MudTd>
-        <MudTd DataLabel="Correo">@context.Correo</MudTd>
-        <MudTd DataLabel="Direccion">@context.Direccion</MudTd>
-        <MudTd DataLabel="Telefono">@context.Telefono</MudTd>
-
-
-        <MudTd>
-            <MudButton Link="@($"/estudiante/editar/{context.Id}")" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Tertiary"
-                       Class="text-center">Editar</MudButton>
-            <MudButton Link="@($"/estudiante/eliminar/{context.Id}")" Size="Size.Small" Variant="Variant.Outlined" Color="Color.Warning"
-                       Class="text-center">Eliminar</MudButton>
-        </MudTd>
+    <RowTemplate Context="item">
+        <MudTd>@item.Nombre</MudTd>
+        <MudTd>@item.Apellido</MudTd>
+        <MudTd>@item.CodigoEstudiante</MudTd>
+        <MudTd>@item.GradoId</MudTd>
+        <MudTd>@item.TurnoId</MudTd>
+        <MudTd>@item.Encargado</MudTd>
+        <MudTd>@item.EncargadoDUI</MudTd>
+        <MudTd>@item.Correo</MudTd>
+        <MudTd>@item.Direccion</MudTd>
+        <MudTd>@item.Telefono</MudTd>
+        <MudButton Link="@($"/estudiante/editar/{estudiante.Id}")" Variant="Variant.Outlined" Color="Color.Tertiary">Editar</MudButton>
+        <MudButton Link="@($"/estudiante/eliminar/{estudiante.Id}")" Variant="Variant.Outlined" Color="Color.Warning">Eliminar</MudButton>
     </RowTemplate>
+
     <PagerContent>
         <MudTablePager />
     </PagerContent>

@@ -10,19 +10,19 @@
     <EditForm Model="@user" OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator />
         <MudGrid>
-            <MudItem xs="12">
+            <MudItem xs="12"  >
                 <MudTextField Label="Codigo Docente" Class="mt-3"
-                @bind-Value="user.CodigoDocente" For="@(() => user.CodigoDocente)" Variant="Variant.Outlined" />
+                @bind-Value="user.CodigoDocente" For="@(() => user.CodigoDocente)" Variant="Variant.Outlined" Style="background-color: white" />
             </MudItem>
             <MudItem xs="12">
                 <MudTextField Label="Clave" Class="mt-3"
-                @bind-Value="user.Clave" For="@(() => user.Clave)" InputType="@passwordInputType" Variant="Variant.Outlined">
-                    <MudInputAdornment Adornment="Adornment.End">
-                        <MudIconButton Icon="@Icons.Filled.Visibility" OnClick="@TogglePasswordVisibility"></MudIconButton>
-                    </MudInputAdornment>
+                @bind-Value="user.Clave" For="@(() => user.Clave)" InputType="@passwordInputType" Variant="Variant.Outlined" Style="background-color: white">
                 </MudTextField>
             </MudItem>
             <MudItem xs="12">
+                <MudInputAdornment Adornment="Adornment.End">
+                        <MudIconButton Icon="@Icons.Filled.Visibility" OnClick="@TogglePasswordVisibility"></MudIconButton>
+                  </MudInputAdornment>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3">Login</MudButton>
             </MudItem>
         </MudGrid>
