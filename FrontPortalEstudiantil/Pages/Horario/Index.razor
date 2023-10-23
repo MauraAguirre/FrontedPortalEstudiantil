@@ -1,5 +1,57 @@
-﻿<h3>Index</h3>
+﻿@page "/horario/index"
+@inject HttpClient httpClient
+@inject NavigationManager NavigationManager
 
+
+<MudTable Items="@horarios" Hover="true" Breakpoint="Breakpoint.Sm">
+    <ToolBarContent>
+        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="goAdd" />
+        <MudSpacer />
+        <MudTextField @bind-Value="searchText" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Grado</MudTh>
+        <MudTh>Materia</MudTh>
+        <MudTh>Docente</MudTh>
+        <MudTh>Dia</MudTh>
+        <MudTh>Hora Inicio</MudTh>
+        <MudTh>Hora Salida</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate Context="item">
+        <MudTd>@item.Grado.Nombre</MudTd>
+        <MudTd>@item.Materia.Nombre</MudTd>
+        <MudTd>@item.Docente.Nombre</MudTd>
+        <MudTd>@item.Dia</MudTd>
+        <MudTd>@item.HorarioInicio</MudTd>
+        <MudTd>@item.HorarioSalida</MudTd>
+        <MudButton Link="@($"/horario/editar/{horario.Id}")" Variant="Variant.Outlined" Color="Color.Tertiary">Editar</MudButton>
+        <MudButton Link="@($"/horario/eliminar/{horario.Id}")" Variant="Variant.Outlined" Color="Color.Warning">Eliminar</MudButton>
+    </RowTemplate>
+
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
 @code {
+    private IEnumerable<Horario> horarios = new List<Horario>();
+    private string searchText = "";
+    private Horario horario = new Horario();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await getAll();
+    }
+
+    private async Task getAll()
+    {
+        var httpResponse = await httpClient.PostAsJsonAsync("horario/buscar", horario);
+        string respString = await httpResponse.Content.ReadAsStringAsync();
+        horarios = JsonSerializer.Deserialize<IEnumerable<Horario>>(respString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+
+    private void goAdd()
+    {
+        NavigationManager.NavigateTo("horario/agregar");
+    }
 }
