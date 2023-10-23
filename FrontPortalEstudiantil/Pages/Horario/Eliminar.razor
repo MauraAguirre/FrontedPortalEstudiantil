@@ -1,5 +1,117 @@
-﻿<h3>Eliminar</h3>
+﻿@page "/horario/eliminar/{id:int}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService _localStorageService
+
+<MudText Typo="Typo.h2" Class="ml">Eliminar Horario</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <EditForm Model="horario" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="Nombre" @bind-Value="horario.Dia" For="@(() => horario.Dia)" />
+                        <MudTextField Label="Nombre" @bind-Value="horario.HorarioInicio" For="@(() => horario.HorarioInicio)" />
+                        <MudTextField Label="Nombre" @bind-Value="horario.HorarioSalida" For="@(() => horario.HorarioSalida)" />
+
+                        <MudSelect Variant="Variant.Outlined" Label="Grado" AnchorOrigin="Origin.BottomCenter"
+                        @bind-Value="horario.GradoId" For="@(() => horario.GradoId)">
+                            @foreach (var item in grado)
+                            {
+                                <MudSelectItem Value="@item.Id">@item.Nombre</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudSelect Variant="Variant.Outlined" Label="Docente" AnchorOrigin="Origin.BottomCenter"
+                        @bind-Value="horario.DocenteId" For="@(() => horario.DocenteId)">
+                            @foreach (var item in docente)
+                            {
+                                <MudSelectItem Value="@item.Id">@item.Nombre</MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudSelect Variant="Variant.Outlined" Label="Materia" AnchorOrigin="Origin.BottomCenter"
+                        @bind-Value="horario.MateriaId" For="@(() => horario.MateriaId)">
+                            @foreach (var item in materia)
+                            {
+                                <MudSelectItem Value="@item.Id">@item.Nombre</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Error" Class="ml-auto">Eliminar</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </EditForm>
+            @if (showLeaveAlert)
+            {
+                <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center" ShowCloseIcon="true" CloseIconClicked="(() => CloseMe(true))">Ocurrió un problema.</MudAlert>
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
 @code {
+    [Parameter]
+    public int id { get; set; }
 
+    private IEnumerable<Grado> grado = new List<Grado>();
+    private IEnumerable<Materia> materia = new List<Materia>();
+    private IEnumerable<Docente> docente = new List<Docente>();
+
+
+    private bool showLeaveAlert = false;
+    Horario horario = new Horario();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Http.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsync<string>("token"));
+        await getGrados(); await getMaterias(); await getDocentes();
+
+        var resp = await Http.GetStringAsync("horario/" + id);
+        horario = JsonSerializer.Deserialize<Horario>(resp, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+
+    private async Task OnValidSubmit(EditContext context)
+    {
+        await eliminar();
+    }
+
+    private async Task eliminar()
+    {
+        var httpResponse = await Http.DeleteAsync("horario/" + horario.Id);
+
+        if (!(httpResponse.StatusCode == System.Net.HttpStatusCode.OK))
+        {
+            showLeaveAlert = true;
+        }
+        else
+        {
+            NavigationManager.NavigateTo("horario/index");
+        }
+    }
+
+    private void CloseMe(bool value)
+    {
+        showLeaveAlert = false;
+    }
+
+    private async Task getGrados()
+    {
+        var httpResponse = await Http.GetStringAsync("grado");
+        grado = JsonSerializer.Deserialize<IEnumerable<Grado>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+    private async Task getMaterias()
+    {
+        var httpResponse = await Http.GetStringAsync("turno");
+        materia = JsonSerializer.Deserialize<IEnumerable<Materia>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+    private async Task getDocentes()
+    {
+        var httpResponse = await Http.GetStringAsync("grado");
+        docente = JsonSerializer.Deserialize<IEnumerable<Docente>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
 }

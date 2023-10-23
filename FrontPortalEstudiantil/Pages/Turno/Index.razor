@@ -1,94 +1,54 @@
-﻿@layout LoginLayout
-@page "/"
-@using static FrontPortalEstudiantil.Models.Docente;
-
+﻿@page "/turno/index"
+@using System.Net.Http.Headers;
+@using System.Text.Json;
+@inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService _localStorageService
-@inject HttpClient Http
-<MudImage ObjectFit="ObjectFit.Contain" Src="/images/sc.png" Width="200" Height="150" Alt="Swedish Farm House" Elevation="0" Class="rounded-lg ma-4" />
-<MudPaper Class="pa-4 ma-4" Elevation="1" Style="background-color: white; border: 2px solid black;">
-    <EditForm Model="@user" OnValidSubmit="OnValidSubmit">
-        <DataAnnotationsValidator />
-        <MudGrid>
-            <MudItem xs="12"  >
-                <MudTextField Label="Codigo Docente" Class="mt-3"
-                @bind-Value="user.CodigoDocente" For="@(() => user.CodigoDocente)" Variant="Variant.Outlined" Style="background-color: white" />
-            </MudItem>
-            <MudItem xs="12">
-                <MudTextField Label="Clave" Class="mt-3"
-                @bind-Value="user.Clave" For="@(() => user.Clave)" InputType="@passwordInputType" Variant="Variant.Outlined" Style="background-color: white">
-                </MudTextField>
-            </MudItem>
-            <MudItem xs="12">
-                <MudInputAdornment Adornment="Adornment.End">
-                        <MudIconButton Icon="@Icons.Filled.Visibility" OnClick="@TogglePasswordVisibility"></MudIconButton>
-                  </MudInputAdornment>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto mt-3">Login</MudButton>
-            </MudItem>
-        </MudGrid>
-    </EditForm>
-    @if (showLeaveAlert)
-    {
-        <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Center" ShowCloseIcon="true" CloseIconClicked="(() => CloseMe(true))">No se reconocen las credenciales ingresadas.</MudAlert>
-    }
-</MudPaper>
 
+<MudText Typo="Typo.h2" Class="ml">Turnos</MudText>
+<ToolBarContent>
+        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="goAdd" />
+        <MudSpacer />
+</ToolBarContent>
+<MudGrid>
+    @foreach (var turno in turnos)
+    {
+        <MudItem xs="12" sm="10" md="6" lg="4">
+            <MudCard Style="height: 150px; width: 200px; position: relative;">
+                <MudCardHeader Class="blue lighten-1 d-flex align-items-center justify-center" Style="height: 53px;">
+                    <MudText Typo="Typo.h6" Style="color: white;">Turnos:</MudText>
+                </MudCardHeader>
+                <MudCardContent Class="d-flex align-items-center justify-center" Style="height: calc(100% - 53px - 56px);">
+                    <MudText Typo="Typo.h6">@turno.Nombre</MudText>
+                </MudCardContent>
+                <MudCardActions Class="justify-center" Style="position: absolute; bottom: 0; width: 100%;">
+                    <MudButton Link="@($"/turno/editar/{turno.Id}")" Variant="Variant.Outlined" Color="Color.Tertiary">Editar</MudButton>
+                    <MudButton Link="@($"/turno/eliminar/{turno.Id}")" Variant="Variant.Outlined" Color="Color.Warning">Eliminar</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
 
 @code {
-
-
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-    private bool showLeaveAlert = false;
-
-    UserLogin user = new UserLogin();
-    bool success;
-
+    private IEnumerable<Turno> turnos = new List<Turno>();
+    private string searchText = "";
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await authenticationStateTask;
-        var user = authState.User;
-        if (user.Identity != null)
-        {
-            if (user.Identity.IsAuthenticated)
-            {
-                NavigationManager.NavigateTo($"/home");
-            }
-        }
-    }
-    private InputType passwordInputType = InputType.Password;
-
-    private void TogglePasswordVisibility()
-    {
-        passwordInputType = passwordInputType == InputType.Password ? InputType.Text : InputType.Password;
-    }
-    protected async Task OnValidSubmit()
-    {
-        var httpResponse = await Http.PostAsJsonAsync<UserLogin>("docente/login", user);
-
-        if (!(httpResponse.StatusCode == System.Net.HttpStatusCode.OK))
-        {
-            showLeaveAlert = true;
-        }
-        else
-        {
-            var contentResponse = await httpResponse.Content.ReadAsStringAsync();
-            var token = contentResponse;
-            if (token != null)
-            {
-                await _localStorageService.SetItemAsync("token", token);
-                NavigationManager.NavigateTo($"home", forceLoad: true);
-            }
-            else
-            {
-                showLeaveAlert = true;
-            }
-        }
+        httpClient.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", await _localStorageService.GetItemAsync<string>("token"));
+        await getAll();
     }
 
-    private void CloseMe(bool value)
+    private async Task getAll()
     {
-        showLeaveAlert = false;
+        var httpResponse = await httpClient.GetStringAsync("turno");
+        turnos = JsonSerializer.Deserialize<IEnumerable<Turno>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    }
+
+    private void goAdd()
+    {
+        NavigationManager.NavigateTo("turno/agregar");
     }
 }
