@@ -12,9 +12,9 @@
                 <DataAnnotationsValidator />
                 <MudCard>
                     <MudCardContent>
-                        <MudTextField Label="Nombre" @bind-Value="horario.Dia" For="@(() => horario.Dia)" />
-                        <MudTextField Label="Nombre" @bind-Value="horario.HorarioInicio" For="@(() => horario.HorarioInicio)" />
-                        <MudTextField Label="Nombre" @bind-Value="horario.HorarioSalida" For="@(() => horario.HorarioSalida)" />
+                        <MudTextField Label="Dia" @bind-Value="horario.Dia" For="@(() => horario.Dia)" />
+                        <MudTextField Label="HorarioInicio" @bind-Value="horario.HorarioInicio" For="@(() => horario.HorarioInicio)" />
+                        <MudTextField Label="HorarioSalida" @bind-Value="horario.HorarioSalida" For="@(() => horario.HorarioSalida)" />
 
                         <MudSelect Variant="Variant.Outlined" Label="Grado" AnchorOrigin="Origin.BottomCenter"
                         @bind-Value="horario.GradoId" For="@(() => horario.GradoId)">
