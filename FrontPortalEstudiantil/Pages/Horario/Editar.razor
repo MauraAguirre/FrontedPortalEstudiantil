@@ -107,12 +107,12 @@
     }
     private async Task getMaterias()
     {
-        var httpResponse = await Http.GetStringAsync("turno");
+        var httpResponse = await Http.GetStringAsync("matera");
         materia = JsonSerializer.Deserialize<IEnumerable<Materia>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
     private async Task getDocentes()
     {
-        var httpResponse = await Http.GetStringAsync("grado");
+        var httpResponse = await Http.GetStringAsync("docente");
         docente = JsonSerializer.Deserialize<IEnumerable<Docente>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 }

@@ -3,7 +3,7 @@
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService _localStorageService
 
-<MudText Typo="Typo.h2" Class="ml">Eliminar Estudiante</MudText>
+<MudText Typo="Typo.h2" Class="ml">Eliminar Docente</MudText>
 
 <MudGrid>
     <MudItem xs="12" sm="7">
@@ -15,12 +15,10 @@
                         <MudTextField Label="Nombre" @bind-Value="docente.Nombre" For="@(() => docente.Nombre)" />
                         <MudTextField Label="Apellido" @bind-Value="docente.Apellido" For="@(() => docente.Apellido)" />
                         <MudTextField Label="CodigoDocente" @bind-Value="docente.CodigoDocente" For="@(() => docente.CodigoDocente)" />
-                        <MudTextField Label="Clave" @bind-Value="docente.Clave" For="@(() => docente.Clave)" />
                         <MudTextField Label="DUI" @bind-Value="docente.DUI" For="@(() => docente.DUI)" />
                         <MudTextField Label="Correo" @bind-Value="docente.Correo" For="@(() => docente.Correo)" />
                         <MudTextField Label="Direccion" @bind-Value="docente.Dirección" For="@(() => docente.Dirección)" />
-                        <MudTextField Label="Telefono" @bind-Value="docente.Telefono" For="@(() => docente.Telefono)" />)" 
-
+                        <MudTextField Label="Telefono" @bind-Value="docente.Telefono" For="@(() => docente.Telefono)" />
 
                         <MudSelect Variant="Variant.Outlined" Label="Rol" AnchorOrigin="Origin.BottomCenter"
                         @bind-Value="docente.RolId" For="@(() => docente.RolId)">
@@ -130,4 +128,4 @@
         var httpResponse = await Http.GetStringAsync("turno");
         turno = JsonSerializer.Deserialize<IEnumerable<Turno>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
-}
+} 

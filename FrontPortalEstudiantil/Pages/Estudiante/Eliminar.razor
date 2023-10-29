@@ -1,4 +1,4 @@
-﻿@page "/estudiante/eliminar/{id:int}"
+﻿ @page "/estudiante/eliminar/{id:int}"
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService _localStorageService
@@ -104,4 +104,5 @@
         var httpResponse = await Http.GetStringAsync("turno");
         turnos = JsonSerializer.Deserialize<IEnumerable<Turno>>(httpResponse, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
-}
+} 
+

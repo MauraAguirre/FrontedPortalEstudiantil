@@ -1,4 +1,5 @@
 ﻿@page "/estudiante/editar/{id:int}"
+
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService _localStorageService
@@ -20,7 +21,6 @@
                         <MudTextField Label="Correo" @bind-Value="estudiante.Correo" For="@(() => estudiante.Correo)" />
                         <MudTextField Label="Direccion" @bind-Value="estudiante.Direccion" For="@(() => estudiante.Direccion)" />
                         <MudTextField Label="Telefono" @bind-Value="estudiante.Telefono" For="@(() => estudiante.Telefono)" />
-
                         <MudSelect Variant="Variant.Outlined" Label="Turno" AnchorOrigin="Origin.BottomCenter"
                         @bind-Value="estudiante.TurnoId" For="@(() => estudiante.TurnoId)">
                             @foreach (var item in turnos)
@@ -53,6 +53,7 @@
 @code {
     [Parameter]
     public int id { get; set; }
+
 
     private IEnumerable<Turno> turnos = new List<Turno>();
     private IEnumerable<Grado> grados = new List<Grado>();
@@ -93,7 +94,6 @@
     {
         showLeaveAlert = false;
     }
-
 
     private async Task getGrados()
     {

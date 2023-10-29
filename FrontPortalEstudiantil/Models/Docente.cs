@@ -56,7 +56,7 @@ namespace FrontPortalEstudiantil.Models
         public int Estatus { get; set; }
 
         //[ValidateNever]
-        //public Rol Rol { get; set; }
+        public Rol Rol { get; set; }
         //[ValidateNever]
         public Materia Materia { get; set; }
         //[ValidateNever]
